@@ -1,2 +1,13 @@
 server:
   port: 8080
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/lzf_demo?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: admin
+    type: com.alibaba.druid.pool.DruidDataSource
+#    jndi-name: 1234
+mybatis:
+  mapperLocations: classpath:mapper/*.xml
+  typeAliasesPackage: com.ample16.backend.entity

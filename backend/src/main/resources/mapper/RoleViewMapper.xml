@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ample16.backend.mapper.RoleViewMapper">
+  <resultMap id="BaseResultMap" type="com.ample16.backend.entity.RoleView">
+    <result column="role_id" jdbcType="BIGINT" property="roleId" />
+    <result column="view_id" jdbcType="BIGINT" property="viewId" />
+  </resultMap>
+  <insert id="insert" parameterType="com.ample16.backend.entity.RoleView">
+    insert into role_view (role_id, view_id)
+    values (#{roleId,jdbcType=BIGINT}, #{viewId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ample16.backend.entity.RoleView">
+    insert into role_view
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="viewId != null">
+        view_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        #{roleId,jdbcType=BIGINT},
+      </if>
+      <if test="viewId != null">
+        #{viewId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+</mapper>

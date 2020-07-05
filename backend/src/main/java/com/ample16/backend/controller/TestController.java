@@ -1,7 +1,8 @@
 package com.ample16.backend.controller;
-
 import com.ample16.backend.entity.AuthScope;
-import javafx.application.Application;
+import com.ample16.backend.entity.User;
+import com.ample16.backend.req.LoginReq;
+import com.ample16.backend.resp.ResponseBean;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -11,7 +12,6 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.Controller;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -25,16 +25,17 @@ public class TestController {
 
     @PostMapping("/login")
     @ResponseBody
-    public String login(String username, String password) {
+    public ResponseBean login(@RequestBody LoginReq loginReq) {
+        String username = loginReq.getUsername();
+        String password = loginReq.getPassword();
         UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(username, password);
         try {
             SecurityUtils.getSubject().login(usernamePasswordToken);
         } catch (AuthenticationException e) {
             e.printStackTrace();
-            return "账号或者密码错误";
+            return ResponseBean.response().setCode(10000).setMessage("账号或密码错误");
         }
-
-        return "success";
+        return ResponseBean.success();
     }
 
     @GetMapping("/testShiro")
@@ -47,6 +48,22 @@ public class TestController {
         System.out.println("=====principals========" + principals.getPrimaryPrincipal());
         System.out.println("=====session========" + session.getAttribute("userInfo"));
         return "success";
+    }
+
+    @GetMapping("/hasLogin")
+    @ResponseBody
+    public ResponseBean hasLogin() {
+        PrincipalCollection principals = SecurityUtils.getSubject().getPrincipals();
+        Subject subject = SecurityUtils.getSubject();
+        Session session = subject.getSession();
+        User userInfo = (User) session.getAttribute("userInfo");
+        System.out.println(session);
+        System.out.println("=====principals========" + principals.getPrimaryPrincipal());
+        System.out.println("=====session========" + session.getAttribute("userInfo"));
+        if (userInfo == null) {
+            return ResponseBean.response().setCode(10001).setMessage("用户未登录");
+        }
+        return ResponseBean.success();
     }
 
     @GetMapping("/logout")
